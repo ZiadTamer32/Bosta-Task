@@ -1,0 +1,110 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 354 96% 43%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 354 100% 97%;
+    --accent-foreground: 354 96% 43%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 354 96% 43%;
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border box-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    margin: 0;
+    min-height: 100vh;
+    background-color: #f8f8f8;
+  }
+
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@layer components {
+  /* Gradient button */
+  .btn-gradient {
+    @apply bg-gradient-primary text-white font-semibold rounded-xl px-6 py-3 shadow-md transition-all duration-200;
+    background-size: 200% auto;
+    background-position: left center;
+  }
+  .btn-gradient:hover {
+    @apply shadow-lg bg-gradient-hero;
+  }
+
+  /* Card hover lift */
+  .card-hover {
+    @apply transition-all duration-300 ease-out;
+  }
+  .card-hover:hover {
+    @apply -translate-y-1 shadow-xl;
+  }
+
+  /* Page transition wrapper */
+  .page-enter {
+    animation: pageEnter 0.35s ease-out both;
+  }
+
+  /* Gradient text */
+  .text-gradient {
+    background: linear-gradient(135deg, #e30613 0%, #a8040e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #e30613;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a8040e;
+  }
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
