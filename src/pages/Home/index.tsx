@@ -1,8 +1,28 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Zap, Shield, Heart } from "lucide-react";
+import {
+  ArrowRight,
+  Zap,
+  Shield,
+  Heart,
+  ShoppingBag,
+  Package,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useProductStore } from "@/store/productStore";
+import ProductCard from "@/components/ui/ProductCard";
+import EmptyState from "@/components/ui/EmptyState";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function HomePage() {
+  const { products, loading, fetchProducts } = useProductStore();
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const featuredProducts = products.slice(0, 4);
+
   const valueCards = [
     {
       icon: Zap,
@@ -95,6 +115,74 @@ export default function HomePage() {
               </a>
             </div>
           </div>
+        </div>
+      </section>
+      {/* Featured Products */}
+      <section className="bg-gray-50/50 py-24 border-y border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+            <div>
+              <h2 className="text-4xl font-black text-gray-900 mb-4">
+                Featured <span className="text-gradient">Collections</span>
+              </h2>
+              <p className="text-gray-500 max-w-xl text-lg">
+                Explore our most popular items, hand-picked for their
+                exceptional quality and design.
+              </p>
+            </div>
+            <Link to="/products" className="shrink-0">
+              <Button
+                variant="outline"
+                className="rounded-xl border-gray-200 hover:border-primary hover:text-primary transition-all group px-6 py-5 h-auto text-base font-bold"
+              >
+                View All Products
+                <ArrowRight
+                  size={16}
+                  className="ml-2 group-hover:translate-x-1 transition-transform"
+                />
+              </Button>
+            </Link>
+          </div>
+
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
+                >
+                  <Skeleton className="h-[220px] w-full" />
+                  <div className="p-4 space-y-3">
+                    <Skeleton className="h-4 w-3/4 rounded-lg" />
+                    <Skeleton className="h-4 w-1/2 rounded-lg" />
+                    <Skeleton className="h-8 w-full rounded-xl" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : featuredProducts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {featuredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm py-12">
+              <EmptyState
+                icon={<Package size={48} />}
+                title="No featured products"
+                description="We're currently updating our catalog with new collections. Please check back shortly!"
+                action={
+                  <Link to="/products">
+                    <Button className="btn-gradient">
+                      <ShoppingBag size={18} className="mr-2" />
+                      Our Full Catalog
+                    </Button>
+                  </Link>
+                }
+              />
+            </div>
+          )}
         </div>
       </section>
 

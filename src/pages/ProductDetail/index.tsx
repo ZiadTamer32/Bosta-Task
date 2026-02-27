@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, ShoppingCart, Star, Package } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Star, Package, SearchX } from "lucide-react";
 import { productService } from "@/services/productService";
 import { useCartStore } from "@/store/cartStore";
 import type { Product } from "@/types";
@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { useProductStore } from "@/store/productStore";
 import ProductCard from "@/components/ui/ProductCard";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -97,7 +98,7 @@ export default function ProductDetailPage() {
       {/* Back */}
       <Link
         to="/products"
-        className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-primary transition-colors mb-8 group"
+        className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-primary transition-colors mb-4 group"
       >
         <ArrowLeft
           size={15}
@@ -106,26 +107,36 @@ export default function ProductDetailPage() {
         Back to Products
       </Link>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
-        {/* Image */}
-        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex items-center justify-center p-10 aspect-square">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 lg:gap-16">
+        {/* Image for large screens*/}
+        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm hidden sm:flex items-center justify-center p-10 overflow-hidden">
           <img
             src={product.image}
             alt={product.title}
             loading="lazy"
-            className="max-h-full max-w-full object-contain transition-transform duration-500 hover:scale-105"
+            className="max-w-full max-h-full object-contain transition-transform duration-500 hover:scale-105"
           />
         </div>
 
         {/* Info */}
         <div className="flex flex-col gap-5 pt-2">
           <div>
-            <Badge className="bg-gradient-primary text-white border-0 text-xs uppercase tracking-wide mb-3">
+            <Badge className="bg-gradient-primary text-white pt-1 border-0 text-xs uppercase mb-3">
               {product.category}
             </Badge>
             <h1 className="text-2xl sm:text-3xl font-black text-gray-900 leading-tight">
               {product.title}
             </h1>
+          </div>
+
+          {/* Image for small screens*/}
+          <div className="bg-white w-full h-72 rounded-3xl border border-gray-100 shadow-sm sm:hidden flex items-center justify-center p-10 overflow-hidden">
+            <img
+              src={product.image}
+              alt={product.title}
+              loading="lazy"
+              className="max-w-full max-h-full object-contain transition-transform duration-500 hover:scale-105"
+            />
           </div>
 
           {/* Rating */}
@@ -177,16 +188,25 @@ export default function ProductDetailPage() {
             {adding ? "✓ Added to Cart!" : "Add to Cart"}
           </Button>
         </div>
-        {/* Related Products */}
-        <div className="col-span-2">
-          <h3 className="text-2xl font-bold text-gray-700 uppercase tracking-wide mb-2">
-            Related Products
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {relatedProducts.map((relatedProduct) => (
+      </div>
+      {/* Related Products */}
+      <div className="sm:pt-16 pt-8">
+        <h3 className="text-2xl font-bold text-gray-700 uppercase tracking-wide mb-2">
+          Related Products
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {relatedProducts.length > 0 ? (
+            relatedProducts.map((relatedProduct) => (
               <ProductCard key={relatedProduct.id} product={relatedProduct} />
-            ))}
-          </div>
+            ))
+          ) : (
+            <EmptyState
+              className="col-span-full py-2"
+              icon={<SearchX size={32} />}
+              title="No related products found"
+              description="Check back later for more products in this category."
+            />
+          )}
         </div>
       </div>
     </div>

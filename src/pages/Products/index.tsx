@@ -43,6 +43,10 @@ export default function ProductsPage() {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [page]);
+
   const products = getFiltered();
   const totalPages = getTotalPages();
 
