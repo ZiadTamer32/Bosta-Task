@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, ShoppingCart, Star, Package, SearchX } from "lucide-react";
-import { productService } from "@/services/productService";
 import { useCartStore } from "@/store/cartStore";
-import type { Product } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,10 +14,7 @@ export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const addItem = useCartStore((s) => s.addItem);
-
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { product, loading, error, fetchSpecificProduct } = useProductStore();
   const [adding, setAdding] = useState(false);
 
   const products = useProductStore((s) => s.products);
@@ -29,18 +24,7 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     const productId = parseInt(id ?? "", 10);
-    if (isNaN(productId)) {
-      setError("Invalid product ID");
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    productService
-      .getById(productId)
-      .then(setProduct)
-      .catch(() => setError("Product not found or unavailable."))
-      .finally(() => setLoading(false));
+    fetchSpecificProduct(productId);
   }, [id]);
 
   const handleAddToCart = () => {

@@ -39,6 +39,9 @@ export default function Header() {
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/products", label: "Products" },
+    ...(isAuthenticated && mobileOpen
+      ? [{ to: "/create", label: "Create Product" }]
+      : []),
   ];
 
   const handleLogout = () => {
@@ -178,7 +181,7 @@ export default function Header() {
                   end={link.to === "/"}
                   onClick={() => setMobileOpen(false)}
                   className={`
-                    "block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                    block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors
                    ${
                      isActive
                        ? "bg-red-50 text-primary font-semibold"

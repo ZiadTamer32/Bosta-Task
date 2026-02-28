@@ -4,6 +4,7 @@ import type { Product, SortOrder } from "@/types";
 
 interface ProductStore {
   products: Product[];
+  product: Product | null;
   categories: string[];
   loading: boolean;
   error: string | null;
@@ -12,6 +13,7 @@ interface ProductStore {
   page: number;
   perPage: number;
   fetchProducts: () => Promise<void>;
+  fetchSpecificProduct: (id: number) => Promise<void>;
   fetchCategories: () => Promise<void>;
   setCategory: (category: string) => void;
   setSortOrder: (order: SortOrder) => void;
@@ -22,6 +24,7 @@ interface ProductStore {
 
 export const useProductStore = create<ProductStore>((set, get) => ({
   products: [],
+  product: null,
   categories: [],
   loading: false,
   error: null,
@@ -38,6 +41,18 @@ export const useProductStore = create<ProductStore>((set, get) => ({
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to load products";
+      set({ error: message, loading: false });
+    }
+  },
+
+  fetchSpecificProduct: async (id: number) => {
+    try {
+      set({ loading: true, error: null });
+      const product = await productService.getById(id);
+      set({ product, loading: false });
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Failed to load categories";
       set({ error: message, loading: false });
     }
   },
